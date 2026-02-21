@@ -93,9 +93,9 @@ export default function AudienceRegistration() {
                             <div style={{ gridColumn: '1/-1' }}>
                                 <label className="input-label">Year</label>
                                 <select className="input" name="year" value={form.year} onChange={handleChange}>
-                                    <option value="">Select Year</option>
+                                    <option value="" >Select Year</option>
                                     {['1st Year', '2nd Year', '3rd Year', '4th Year', 'Alumni', 'Faculty'].map(y => (
-                                        <option key={y} value={y}>{y}</option>
+                                        <option key={y} value={y} className="bg-gray-500">{y}</option>
                                     ))}
                                 </select>
                             </div>

@@ -47,7 +47,7 @@ export default function AdminLayout() {
                         🎓
                     </div>
                     <div>
-                        <div style={{ fontWeight: 800, fontSize: '0.95rem', lineHeight: 1.2 }}>TechFest</div>
+                        <div style={{ fontWeight: 800, fontSize: '0.95rem', lineHeight: 1.2 }}>CROSSROADS 2026</div>
                         <div style={{ fontSize: '0.7rem', color: '#6366f1', fontWeight: 600 }}>ADMIN PANEL</div>
                     </div>
                 </div>

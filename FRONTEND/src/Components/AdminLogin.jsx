@@ -45,7 +45,7 @@ export default function AdminLogin() {
                         🔐
                     </div>
                     <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.25rem' }}>Admin Login</h1>
-                    <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>TechFest Attendance — Secure Dashboard</p>
+                    <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>CROSSROADS Attendance:- Secure Dashboard</p>
                 </div>
 
                 {/* Card */}
@@ -95,7 +95,7 @@ export default function AdminLogin() {
                 </div>
 
                 <p style={{ textAlign: 'center', color: '#4b5563', fontSize: '0.8rem', marginTop: '1.5rem' }}>
-                    Protected by JWT · TechFest 2025
+                    PROTECTED BY AMAN GUPTA · CROSSROADS 2026
                 </p>
             </div>
         </div>

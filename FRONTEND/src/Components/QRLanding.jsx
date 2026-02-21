@@ -31,7 +31,7 @@ export default function QRLanding() {
                         boxShadow: '0 8px 30px rgba(99,102,241,0.4)'
                     }}>🎓</div>
                     <h1 style={{ fontSize: '2rem', fontWeight: 800, lineHeight: 1.2, marginBottom: '0.5rem' }}>
-                        TechFest<span style={{ color: '#818cf8' }}> 2025</span>
+                        CROSSROADS<span style={{ color: '#818cf8' }}> 2026</span>
                     </h1>
                     <p style={{ color: '#94a3b8', fontSize: '1rem' }}>
                         Attendance Management System
@@ -44,7 +44,7 @@ export default function QRLanding() {
                         Welcome! 👋
                     </h2>
                     <p style={{ color: '#94a3b8', textAlign: 'center', marginBottom: '2rem', fontSize: '0.95rem' }}>
-                        Are you registered for any event at TechFest?
+                        Are you registered for any event at CROSSROADS?
                     </p>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -81,7 +81,7 @@ export default function QRLanding() {
                 </div>
 
                 <p style={{ textAlign: 'center', color: '#4b5563', fontSize: '0.8rem', marginTop: '1.5rem' }}>
-                    Powered by TechFest Attendance System
+                    Powered by CROSSROADS Attendance System
                 </p>
             </div>
         </div>

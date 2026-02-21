@@ -81,9 +81,9 @@ export default function RegisteredStudents() {
                     onChange={e => { setFilter(e.target.value); setPage(1) }}
                     style={{ maxWidth: '180px' }}
                 >
-                    <option value="">All Status</option>
-                    <option value="true">Present</option>
-                    <option value="false">Absent</option>
+                    <option value="" className="bg-gray-500">All Status</option>
+                    <option value="true" className="bg-gray-500">Present</option>
+                    <option value="false" className="bg-gray-500">Absent</option>
                 </select>
             </div>
 
