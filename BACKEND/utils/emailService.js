@@ -165,7 +165,14 @@ const sendConfirmationEmail = async (to, data, type = 'student', isAdmin = false
             `;
         }
 
-        const result = await transporter.sendMail({ ...mailOptions, html });
+        const mailOptions = {
+            from: `"CROSSROADS 2026" <${emailUser}>`,
+            to,
+            subject,
+            html
+        };
+
+        const result = await transporter.sendMail(mailOptions);
         console.log(`✅ Email sent to ${to}: ${result.messageId}`);
         return result;
     } catch (err) {
