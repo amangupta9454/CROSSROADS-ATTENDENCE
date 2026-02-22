@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
-
 const adminRoutes = require('./routes/adminRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const audienceRoutes = require('./routes/audienceRoutes');
@@ -39,14 +38,7 @@ const app = express();
 app.use(helmet());
 
 // ── CORS ───────────────────────────────────────────────────────────────
-app.use(
-    cors({
-        origin: process.env.FRONTEND_URL || '*',
-        methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
-        credentials: true,
-    })
-);
+app.use(cors("*"))
 
 // ── Rate Limiting ──────────────────────────────────────────────────────
 const limiter = rateLimit({

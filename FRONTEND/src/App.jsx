@@ -12,6 +12,7 @@ import ProtectedRoute from './Components/ProtectedRoute'
 // Admin dashboard
 import AdminLayout from './Components/AdminLayout'
 import Dashboard from './Components/Dashboard'
+import Volenter from './Components/Volenter'
 import RegisteredStudents from './Components/RegisteredStudents'
 import PresentStudents from './Components/PresentStudents'
 import AudienceList from './Components/AudienceList'
@@ -30,6 +31,9 @@ export default function App() {
 
       {/* Admin Auth */}
       <Route path="/admin/login" element={<AdminLogin />} />
+
+      {/* Volunteer View */}
+      <Route path="/volunteer" element={<Volenter />} />
 
       {/* Admin Dashboard (protected) */}
       <Route

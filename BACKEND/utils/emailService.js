@@ -2,54 +2,54 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const sendConfirmationEmail = async (to, data, type = 'student', isAdmin = false) => {
-    try {
-        require('dotenv').config();
+  try {
+    require('dotenv').config();
 
-        const emailUser = process.env.EMAIL_USER?.trim();
-        const emailPass = process.env.EMAIL_PASS?.trim();
+    const emailUser = process.env.EMAIL_USER?.trim();
+    const emailPass = process.env.EMAIL_PASS?.trim();
 
-        if (!emailUser || !emailPass) {
-            console.log('❌ Email credentials missing in .env. Skipping email.');
-            return;
-        }
+    if (!emailUser || !emailPass) {
+      console.log('❌ Email credentials missing in .env. Skipping email.');
+      return;
+    }
 
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: emailUser,
-                pass: emailPass,
-            },
-            tls: {
-                rejectUnauthorized: false
-            }
-        });
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: emailUser,
+        pass: emailPass,
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
 
-        const isStudent = type === 'student';
-        const name = isStudent ? data.teamLeaderName : data.name;
-        const email = isStudent ? data.leaderEmail : (data.email || to);
-        const id = isStudent ? data.studentId : 'WALK-IN';
-        const eventDisplay = isStudent ? data.eventName : 'Crossroads 2026';
+    const isStudent = type === 'student';
+    const name = isStudent ? data.teamLeaderName : data.name;
+    const email = isStudent ? data.leaderEmail : (data.email || to);
+    const id = isStudent ? data.studentId : 'WALK-IN';
+    const eventDisplay = isStudent ? data.eventName : 'Crossroads 2026';
 
-        // Member list for students
-        let memberListHtml = '';
-        if (isStudent && data.teamMembers && data.teamMembers.length > 0) {
-            memberListHtml = data.teamMembers.map((m, i) => `
+    // Member list for students
+    let memberListHtml = '';
+    if (isStudent && data.teamMembers && data.teamMembers.length > 0) {
+      memberListHtml = data.teamMembers.map((m, i) => `
                 <tr>
                   <td style="padding:10px; border-bottom:1px solid ${isAdmin ? '#e5e7eb' : '#1f2937'};">Member ${i + 1}</td>
                   <td style="padding:10px; border-bottom:1px solid ${isAdmin ? '#e5e7eb' : '#1f2937'};">${m}</td>
                 </tr>
             `).join('');
-        } else if (isStudent) {
-            memberListHtml = `<tr><td colspan="2" style="padding:10px; text-align:center;">Solo Participant</td></tr>`;
-        }
+    } else if (isStudent) {
+      memberListHtml = `<tr><td colspan="2" style="padding:10px; text-align:center;">Solo Participant</td></tr>`;
+    }
 
-        // --- TEMPLATE LOGIC ---
-        let subject, html;
+    // --- TEMPLATE LOGIC ---
+    let subject, html;
 
-        if (isAdmin) {
-            // Internal Admin Notification (Different UI: Cleaner/Professional)
-            subject = `[ADMIN LOG] New ${isStudent ? 'Student' : 'Audience'} Check-in: ${name}`;
-            html = `
+    if (isAdmin) {
+      // Internal Admin Notification (Different UI: Cleaner/Professional)
+      subject = `[ADMIN LOG] New ${isStudent ? 'Student' : 'Audience'} Check-in: ${name}`;
+      html = `
 <div style="font-family:sans-serif; max-width:650px; margin:auto; background:#ffffff; color:#1f2937; border: 1px solid #e5e7eb; border-radius:12px; overflow:hidden;">
   <div style="background:#0f172a; padding:30px; text-align:center; color:white;">
     <h2 style="margin:0; font-size:24px;">CROSSROADS 2026</h2>
@@ -87,12 +87,12 @@ const sendConfirmationEmail = async (to, data, type = 'student', isAdmin = false
   </div>
 </div>
             `;
-        } else {
-            // Standard User Confirmation (Premium Dark UI)
-            subject = isStudent
-                ? `Attendance Confirmed – ${data.teamName} (${data.studentId})`
-                : `Welcome to Crossroads 2026! – ${data.name}`;
-            html = `
+    } else {
+      // Standard User Confirmation (Premium Dark UI)
+      subject = isStudent
+        ? `Attendance Confirmed – ${data.teamName} (${data.studentId})`
+        : `Welcome to Crossroads 2026! – ${data.name}`;
+      html = `
 <div style="font-family:'Segoe UI',sans-serif; max-width:720px; margin:auto; background:#0b1120; color:#e2e8f0; padding:0; border-radius:20px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
   <div style="background:linear-gradient(135deg,#0ea5e9,#6366f1,#9333ea); padding:55px 30px; text-align:center; color:white; position:relative;">
     <h1 style="margin:0; font-size:42px; letter-spacing:1px;">CROSSROADS 2026</h1>
@@ -105,9 +105,9 @@ const sendConfirmationEmail = async (to, data, type = 'student', isAdmin = false
     <p style="font-size:18px; line-height:1.7;">Hello <strong>${name}</strong>,</p>
     <p style="font-size:16px; line-height:1.8; color:#cbd5e1;">
       ${isStudent
-                    ? `Your team <strong style="color:#38bdf8;">${data.teamName}</strong> has been officially checked in for <strong style="color:#f59e0b;">${eventDisplay}</strong>.`
-                    : `You have been officially registered as an audience member for <strong style="color:#f59e0b;">Crossroads 2026</strong>.`
-                }
+          ? `Your team <strong style="color:#38bdf8;">${data.teamName}</strong> has been officially checked in for <strong style="color:#f59e0b;">${eventDisplay}</strong>.`
+          : `You have been officially registered as an audience member for <strong style="color:#f59e0b;">Crossroads 2026</strong>.`
+        }
     </p>
 
     <!-- SUMMARY -->
@@ -163,22 +163,22 @@ const sendConfirmationEmail = async (to, data, type = 'student', isAdmin = false
   </div>
 </div>
             `;
-        }
-
-        const mailOptions = {
-            from: `"CROSSROADS 2026" <${emailUser}>`,
-            to,
-            subject,
-            html
-        };
-
-        const result = await transporter.sendMail(mailOptions);
-        console.log(`✅ Email sent to ${to}: ${result.messageId}`);
-        return result;
-    } catch (err) {
-        console.error('❌ Email Error:', err.message);
-        return null;
     }
+
+    const mailOptions = {
+      from: `"CROSSROADS 2026" <${emailUser}>`,
+      to,
+      subject,
+      html
+    };
+
+    const result = await transporter.sendMail(mailOptions);
+    console.log(`✅ Email sent to ${to}: ${result.messageId}`);
+    return result;
+  } catch (err) {
+    console.error('❌ Email Error:', err.message);
+    return null;
+  }
 };
 
 module.exports = { sendConfirmationEmail };
