@@ -62,7 +62,14 @@ const seedAdmin = async (req, res) => {
             role: 'superadmin',
         });
 
+        const newVolunteer = new Admin({
+            email: 'guptaaman8574@gmail.com',
+            password: 'Aman@2005',
+            role: 'volunteer',
+        });
+
         await newAdmin.save();
+        await newVolunteer.save();
         return res.status(201).json({
             message: force ? 'Admin reset and re-seeded successfully' : 'Admin seeded successfully',
             email: newAdmin.email,

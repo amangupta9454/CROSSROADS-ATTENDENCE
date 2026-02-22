@@ -11,8 +11,8 @@ import ProtectedRoute from './Components/ProtectedRoute'
 
 // Admin dashboard
 import AdminLayout from './Components/AdminLayout'
-import Dashboard from './Components/Dashboard'
 import Volenter from './Components/Volenter'
+import Dashboard from './Components/Dashboard'
 import RegisteredStudents from './Components/RegisteredStudents'
 import PresentStudents from './Components/PresentStudents'
 import AudienceList from './Components/AudienceList'
@@ -32,19 +32,33 @@ export default function App() {
       {/* Admin Auth */}
       <Route path="/admin/login" element={<AdminLogin />} />
 
-      {/* Volunteer View */}
-      <Route path="/volunteer" element={<Volenter />} />
-
       {/* Admin Dashboard (protected) */}
       <Route
         path="/admin"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
             <AdminLayout />
           </ProtectedRoute>
         }
       >
         <Route index element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="students" element={<RegisteredStudents />} />
+        <Route path="present" element={<PresentStudents />} />
+        <Route path="audience" element={<AudienceList />} />
+        <Route path="add-student" element={<AddStudent />} />
+      </Route>
+
+      {/* Volunteer Dashboard (protected) */}
+      <Route
+        path="/volunteer"
+        element={
+          <ProtectedRoute allowedRoles={['volunteer']}>
+            <Volenter />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Navigate to="/volunteer/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="students" element={<RegisteredStudents />} />
         <Route path="present" element={<PresentStudents />} />

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
@@ -13,6 +14,8 @@ export default function PresentStudents() {
     const [loading, setLoading] = useState(true)
     const [exporting, setExporting] = useState(false)
     const token = localStorage.getItem('techfest_token')
+    const admin = JSON.parse(localStorage.getItem('techfest_admin') || '{}')
+    const navigate = useNavigate()
     const LIMIT = 15
 
     const fetchStudents = useCallback(async () => {
@@ -59,9 +62,11 @@ export default function PresentStudents() {
                     <h1 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '0.25rem' }}>✅ Present Students</h1>
                     <p style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Checked in: <strong style={{ color: '#10b981' }}>{total}</strong></p>
                 </div>
-                <button className="btn btn-success" onClick={handleExport} disabled={exporting}>
-                    {exporting ? '⏳ Exporting...' : '📥 Export to Excel'}
-                </button>
+                {admin.role !== 'volunteer' && (
+                    <button className="btn btn-success" onClick={handleExport} disabled={exporting}>
+                        {exporting ? '⏳ Exporting...' : '📥 Export to Excel'}
+                    </button>
+                )}
             </div>
 
             <div style={{ display: 'flex', marginBottom: '1.25rem' }}>

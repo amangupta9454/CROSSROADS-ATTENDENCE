@@ -247,6 +247,7 @@ function BulkUpload() {
 // ── Main AddStudent Component ──────────────────────────────────────────
 export default function AddStudent() {
     const [tab, setTab] = useState('manual')
+    const admin = JSON.parse(localStorage.getItem('techfest_admin') || '{}')
 
     const TabBtn = ({ id, label, icon }) => (
         <button
@@ -268,7 +269,9 @@ export default function AddStudent() {
             {/* Tab Switcher */}
             <div style={{ display: 'flex', gap: '0.6rem', marginBottom: '1.75rem', background: 'rgba(255,255,255,0.04)', padding: '0.4rem', borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.08)' }}>
                 <TabBtn id="manual" label="Manual Entry" icon="✍️" />
-                <TabBtn id="bulk" label="Bulk Upload" icon="📤" />
+                {admin.role !== 'volunteer' && (
+                    <TabBtn id="bulk" label="Bulk Upload" icon="📤" />
+                )}
             </div>
 
             <div className="card">

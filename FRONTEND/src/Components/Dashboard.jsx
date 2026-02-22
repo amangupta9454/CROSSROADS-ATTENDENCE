@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
@@ -19,6 +20,7 @@ export default function Dashboard() {
     const [stats, setStats] = useState(null)
     const [loading, setLoading] = useState(true)
     const token = localStorage.getItem('techfest_token')
+    const admin = JSON.parse(localStorage.getItem('techfest_admin') || '{}')
 
     useEffect(() => {
         (async () => {
@@ -96,17 +98,17 @@ export default function Dashboard() {
                             <h3 style={{ fontWeight: 700, marginBottom: '1rem', fontSize: '0.95rem' }}>Quick Actions</h3>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                                 {[
-                                    { label: 'View All Students', href: '/admin/students', icon: '🎓' },
-                                    { label: 'Present Students', href: '/admin/present', icon: '✅' },
-                                    { label: 'Audience List', href: '/admin/audience', icon: '🎟️' },
-                                    { label: 'Add Student', href: '/admin/add-student', icon: '➕' },
+                                    { label: 'View All Students', path: `/${admin.role === 'volunteer' ? 'volunteer' : 'admin'}/students`, icon: '🎓' },
+                                    { label: 'Present Students', path: `/${admin.role === 'volunteer' ? 'volunteer' : 'admin'}/present`, icon: '✅' },
+                                    { label: 'Audience List', path: `/${admin.role === 'volunteer' ? 'volunteer' : 'admin'}/audience`, icon: '🎟️' },
+                                    { label: 'Add Student', path: `/${admin.role === 'volunteer' ? 'volunteer' : 'admin'}/add-student`, icon: '➕' },
                                 ].map(a => (
-                                    <a key={a.href} href={a.href} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 0.8rem', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.04)', color: '#f1f5f9', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500, transition: 'background 0.15s' }}
+                                    <Link key={a.path} to={a.path} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 0.8rem', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.04)', color: '#f1f5f9', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500, transition: 'background 0.15s' }}
                                         onMouseEnter={e => e.currentTarget.style.background = 'rgba(99,102,241,0.15)'}
                                         onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}>
                                         <span>{a.icon}</span>{a.label}
                                         <span style={{ marginLeft: 'auto', color: '#4b5563' }}>→</span>
-                                    </a>
+                                    </Link>
                                 ))}
                             </div>
                         </div>

@@ -10,6 +10,7 @@ export default function AdminLogin() {
     const [form, setForm] = useState({ email: '', password: '' })
     const [loading, setLoading] = useState(false)
     const [showPass, setShowPass] = useState(false)
+    const [role, setRole] = useState('superadmin')
 
     const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
 
@@ -19,10 +20,21 @@ export default function AdminLogin() {
         setLoading(true)
         try {
             const res = await axios.post(`${API}/api/admin/login`, form)
+
+            if (res.data.admin.role !== role) {
+                setLoading(false)
+                return toast.error(`Invalid credentials for ${role === 'superadmin' ? 'Super Admin' : 'Volunteer'}`)
+            }
+
             localStorage.setItem('techfest_token', res.data.token)
             localStorage.setItem('techfest_admin', JSON.stringify(res.data.admin))
-            toast.success('Welcome back! 👋')
-            navigate('/admin/dashboard')
+            toast.success(`Welcome back, ${role === 'superadmin' ? 'Admin' : 'Volunteer'}! 👋`)
+
+            if (role === 'volunteer') {
+                navigate('/volunteer/dashboard')
+            } else {
+                navigate('/admin/dashboard')
+            }
         } catch (err) {
             toast.error(err.response?.data?.message || 'Login failed')
         } finally {
@@ -52,7 +64,19 @@ export default function AdminLogin() {
                 <div className="glass-md" style={{ borderRadius: '1.5rem', padding: '2rem' }}>
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                         <div>
-                            <label className="input-label">Admin Email</label>
+                            <label className="input-label">Select Role</label>
+                            <select
+                                className="input"
+                                value={role}
+                                onChange={(e) => setRole(e.target.value)}
+                                style={{ WebkitAppearance: 'none', appearance: 'none', cursor: 'pointer', background: 'rgba(255,255,255,0.05)' }}
+                            >
+                                <option value="superadmin" style={{ background: '#111827', color: 'white' }}>Super Admin</option>
+                                <option value="volunteer" style={{ background: '#111827', color: 'white' }}>Volunteer</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="input-label">Email Address</label>
                             <input
                                 className="input"
                                 name="email"
