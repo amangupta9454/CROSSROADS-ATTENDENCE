@@ -65,13 +65,13 @@ function ManualForm() {
                     <label className="input-label">Year <span style={{ color: '#ef4444' }}>*</span></label>
                     <select className="input" name="year" value={form.year} onChange={handle} required>
                         <option value="">Select Year</option>
-                        {['1st Year', '2nd Year', '3rd Year', '4th Year'].map(y => <option key={y}>{y}</option>)}
+                        {['1st Year', '2nd Year', '3rd Year', '4th Year'].map(y => <option key={y} className='bg-gray-400'>{y}</option>)}
                     </select>
                 </div>
                 <Field label="Event Name" name="eventName" placeholder="e.g. Hackathon" value={form.eventName} onChange={handle} required />
                 <div>
                     <label className="input-label">Team Size <span style={{ color: '#ef4444' }}>*</span></label>
-                    <select className="input" name="teamSize" value={form.teamSize} onChange={handle}>
+                    <select className="input bg-gray-500" name="teamSize" value={form.teamSize} onChange={handle}>
                         {Array.from({ length: 8 }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}</option>)}
                     </select>
                 </div>
