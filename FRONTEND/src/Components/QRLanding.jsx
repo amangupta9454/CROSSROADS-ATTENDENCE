@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 export default function QRLanding() {
     const navigate = useNavigate()
@@ -21,7 +21,26 @@ export default function QRLanding() {
                 }} />
             </div>
 
-            <div className="animate-fade-up" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '480px' }}>
+            {/* Navbar */}
+            <nav style={{
+                position: 'fixed', top: 0, left: 0, right: 0, zIndex: 10,
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: '1rem 2rem', background: 'rgba(15, 23, 42, 0.6)',
+                backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.08)'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ fontSize: '1.5rem' }}>🎓</div>
+                    <Link to="/" style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', textDecoration: 'none' }}>
+                        CROSSROADS<span style={{ color: '#8b5cf6' }}>'26</span>
+                    </Link>
+                </div>
+                <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+                    <Link to="/" style={{ color: '#cbd5e1', textDecoration: 'none', fontSize: '0.95rem', fontWeight: 500, transition: 'color 0.2s' }} onMouseOver={e => e.target.style.color = '#fff'} onMouseOut={e => e.target.style.color = '#cbd5e1'}>Home</Link>
+                    <Link to="/admin/login" className="btn btn-primary" style={{ padding: '0.5rem 1.25rem', fontSize: '0.9rem', borderRadius: '0.5rem' }}>Admin Login</Link>
+                </div>
+            </nav>
+
+            <div className="animate-fade-up" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '480px', marginTop: '4rem' }}>
                 {/* Header */}
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <div style={{

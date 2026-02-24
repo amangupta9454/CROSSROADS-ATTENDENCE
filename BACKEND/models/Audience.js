@@ -7,6 +7,12 @@ const audienceSchema = new mongoose.Schema(
             required: [true, 'Name is required'],
             trim: true,
         },
+        role: {
+            type: String,
+            required: [true, 'Role is required'],
+            enum: ['Student', 'Parents', 'Faculty'],
+            trim: true,
+        },
         email: {
             type: String,
             required: [true, 'Email is required'],
@@ -18,10 +24,11 @@ const audienceSchema = new mongoose.Schema(
             required: [true, 'Mobile is required'],
             trim: true,
         },
+        // Student Fields
         college: {
             type: String,
-            required: [true, 'College is required'],
             trim: true,
+            default: '',
         },
         branch: {
             type: String,
@@ -34,6 +41,28 @@ const audienceSchema = new mongoose.Schema(
             default: '',
         },
         year: {
+            type: String,
+            trim: true,
+            default: '',
+        },
+        // Parents Fields
+        childName: {
+            type: String,
+            trim: true,
+            default: '',
+        },
+        address: {
+            type: String,
+            trim: true,
+            default: '',
+        },
+        // Faculty Fields
+        designation: {
+            type: String,
+            trim: true,
+            default: '',
+        },
+        department: {
             type: String,
             trim: true,
             default: '',

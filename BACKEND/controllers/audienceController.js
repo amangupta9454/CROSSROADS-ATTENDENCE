@@ -5,10 +5,25 @@ const { sendConfirmationEmail } = require('../utils/emailService');
 // ── Register Audience (auto mark present) ─────────────────────────────
 const registerAudience = async (req, res) => {
     try {
-        const { name, email, mobile, college, branch, course, year } = req.body;
+        const { role, name, email, mobile, college, branch, course, year, childName, address, designation, department } = req.body;
 
-        if (!name || !email || !mobile || !college) {
-            return res.status(400).json({ message: 'Name, email, mobile, and college are required' });
+        if (!role || !name || !email || !mobile) {
+            return res.status(400).json({ message: 'Role, name, email, and mobile are required' });
+        }
+
+        const validRoles = ['Student', 'Parents', 'Faculty'];
+        if (!validRoles.includes(role)) {
+            return res.status(400).json({ message: 'Invalid role provided' });
+        }
+
+        if (role === 'Student' && !college) {
+            return res.status(400).json({ message: 'College is required for Students' });
+        }
+        if (role === 'Parents' && (!childName || !address)) {
+            return res.status(400).json({ message: 'Child name and address are required for Parents' });
+        }
+        if (role === 'Faculty' && (!designation || !department)) {
+            return res.status(400).json({ message: 'Designation and department are required for Faculty' });
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -16,20 +31,26 @@ const registerAudience = async (req, res) => {
             return res.status(400).json({ message: 'Invalid email format' });
         }
 
-        const mobileRegex = /^[0-9]{10}$/;
+        // Strict 10 digit Indian Mobile
+        const mobileRegex = /^[6-9][0-9]{9}$/;
         if (!mobileRegex.test(mobile.replace(/\s/g, ''))) {
-            return res.status(400).json({ message: 'Mobile must be a 10-digit number' });
+            return res.status(400).json({ message: 'Mobile must be a valid 10-digit Indian number' });
         }
 
         // Create new audience instance
         const newAudience = new Audience({
             name: name.trim(),
+            role: role.trim(),
             email: email.trim().toLowerCase(),
             mobile: mobile.trim(),
-            college: college.trim(),
+            college: college?.trim() || '',
             branch: branch?.trim() || '',
             course: course?.trim() || '',
             year: year?.trim() || '',
+            childName: childName?.trim() || '',
+            address: address?.trim() || '',
+            designation: designation?.trim() || '',
+            department: department?.trim() || '',
             presentAt: new Date(), // Mark present automatically
         });
 
@@ -97,13 +118,18 @@ const exportAudience = async (req, res) => {
 
         const data = audience.map((a, i) => ({
             '#': i + 1,
+            Role: a.role,
             Name: a.name,
             Email: a.email,
             Mobile: a.mobile,
-            College: a.college,
+            College: a.college || '-',
             Branch: a.branch || '-',
             Course: a.course || '-',
             Year: a.year || '-',
+            'Child Name': a.childName || '-',
+            Address: a.address || '-',
+            Designation: a.designation || '-',
+            Department: a.department || '-',
             'Registered At': a.presentAt
                 ? new Date(a.presentAt).toLocaleString('en-IN')
                 : '-',

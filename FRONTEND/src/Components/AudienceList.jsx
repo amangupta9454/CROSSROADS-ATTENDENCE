@@ -87,7 +87,7 @@ export default function AudienceList() {
                         <table>
                             <thead>
                                 <tr>
-                                    {['#', 'Name', 'Email', 'Mobile', 'College', 'Branch', 'Course', 'Year', 'Registered At'].map(h => (
+                                    {['#', 'Role', 'Name', 'Email', 'Mobile', 'Type Details', 'Addtl Info', 'Registered At'].map(h => (
                                         <th key={h}>{h}</th>
                                     ))}
                                 </tr>
@@ -98,13 +98,20 @@ export default function AudienceList() {
                                 ) : audience.map((a, i) => (
                                     <tr key={a._id}>
                                         <td style={{ color: '#6b7280', fontSize: '0.8rem' }}>{(page - 1) * LIMIT + i + 1}</td>
+                                        <td style={{ fontWeight: 600, color: '#8b5cf6' }}>{a.role || 'Audience'}</td>
                                         <td style={{ fontWeight: 600 }}>{a.name}</td>
                                         <td style={{ color: '#94a3b8', fontSize: '0.85rem' }}>{a.email}</td>
                                         <td style={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>{a.mobile}</td>
-                                        <td style={{ maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.college}</td>
-                                        <td>{a.branch || '—'}</td>
-                                        <td>{a.course || '—'}</td>
-                                        <td>{a.year || '—'}</td>
+                                        <td style={{ maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '0.85rem' }}>
+                                            {a.role === 'Student' && a.college ? `College: ${a.college}` : ''}
+                                            {a.role === 'Parents' && a.childName ? `Child: ${a.childName}` : ''}
+                                            {a.role === 'Faculty' && a.designation ? `Desig: ${a.designation}` : ''}
+                                        </td>
+                                        <td style={{ maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '0.85rem' }}>
+                                            {a.role === 'Student' && (a.branch || a.course || a.year) ? [a.course, a.branch, a.year].filter(Boolean).join(' | ') : ''}
+                                            {a.role === 'Parents' && a.address ? `${a.address}` : ''}
+                                            {a.role === 'Faculty' && a.department ? `Dept: ${a.department}` : ''}
+                                        </td>
                                         <td style={{ color: '#f59e0b', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
                                             {a.presentAt ? new Date(a.presentAt).toLocaleString('en-IN') : '—'}
                                         </td>
