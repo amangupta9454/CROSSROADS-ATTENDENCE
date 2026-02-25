@@ -13,7 +13,7 @@ const getStudentById = async (req, res) => {
         const student = await RegisteredStudent.findOne({ studentId: studentId.trim() });
 
         if (!student) {
-            return res.status(404).json({ message: 'Student not found. Please check your Student ID.' });
+            return res.status(404).json({ message: 'Student not found. Please check your Team ID.' });
         }
 
         return res.status(200).json({ student });

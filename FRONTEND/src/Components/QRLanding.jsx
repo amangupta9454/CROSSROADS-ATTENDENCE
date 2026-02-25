@@ -412,7 +412,7 @@ export default function QRLanding() {
                                     fontWeight: 400,
                                     marginTop: '0.125rem'
                                 }}>
-                                    I have a Student ID / Team Registration
+                                    I have a Team ID / Team Registration
                                 </div>
                             </div>
                         </button>

@@ -100,7 +100,7 @@ export default function RegisteredStudents() {
                         <table>
                             <thead>
                                 <tr>
-                                    {['#', 'Student ID', 'Team Leader', 'Team Name', 'Event', 'College', 'Year', 'Status', 'Checked In'].map(h => (
+                                    {['#', 'Team ID', 'Team Leader', 'Team Name', 'Event', 'College', 'Year', 'Status', 'Checked In'].map(h => (
                                         <th key={h}>{h}</th>
                                     ))}
                                 </tr>

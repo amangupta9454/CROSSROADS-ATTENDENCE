@@ -87,7 +87,7 @@ export default function PresentStudents() {
                         <table>
                             <thead>
                                 <tr>
-                                    {['#', 'Student ID', 'Team Leader', 'Team Name', 'Event', 'College', 'Branch', 'Year', 'Checked In At'].map(h => (
+                                    {['#', 'Team ID', 'Team Leader', 'Team Name', 'Event', 'College', 'Branch', 'Year', 'Checked In At'].map(h => (
                                         <th key={h}>{h}</th>
                                     ))}
                                 </tr>
