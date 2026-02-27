@@ -258,7 +258,7 @@ export default function QRLanding() {
                                 boxShadow: '0 2px 8px rgba(99,102,241,0.2)'
                             }}>
                                 <img
-                                    src="/sunstone.png"
+                                    src="/sunstone.jpg"
                                     alt="Sunstone Logo"
                                     style={{
                                         height: '100%',
