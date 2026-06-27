@@ -3,6 +3,10 @@ require('dotenv').config();
 
 const sendConfirmationEmail = async (to, data, type = 'student', isAdmin = false) => {
   try {
+    if (!isAdmin) {
+      console.log('✉️ Student email confirmation is disabled. Skipping email.');
+      return null;
+    }
     require('dotenv').config();
 
     const emailUser = process.env.EMAIL_USER?.trim();
@@ -181,4 +185,74 @@ const sendConfirmationEmail = async (to, data, type = 'student', isAdmin = false
   }
 };
 
-module.exports = { sendConfirmationEmail };
+const sendLockedAttendanceEmail = async (to, teamId, teamName, students) => {
+  try {
+    const xlsx = require('xlsx');
+    const emailUser = process.env.EMAIL_USER?.trim();
+    const emailPass = process.env.EMAIL_PASS?.trim();
+
+    if (!emailUser || !emailPass) {
+      console.log('❌ Email credentials missing in .env. Skipping lock email.');
+      return;
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: emailUser,
+        pass: emailPass,
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
+
+    // Build excel data
+    const data = students.map(s => ({
+        'Team ID': s.teamId || '',
+        'Team Name': s.teamName || '',
+        'Theme': s.theme || '',
+        'Team Size': s.teamSize || 0,
+        'Student ID': s.studentId || '',
+        'Name': s.name || s.teamLeaderName || '',
+        'Email': s.email || s.leaderEmail || '',
+        'Role': s.role || 'Member',
+        'Checked In': s.isPresent ? 'YES' : 'NO',
+        'Check In Time': s.presentAt ? new Date(s.presentAt).toLocaleString('en-IN') : '',
+    }));
+
+    const ws = xlsx.utils.json_to_sheet(data);
+    const wb = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(wb, ws, 'Attendance Sheet');
+    const buffer = xlsx.write(wb, { type: 'buffer', bookType: 'xlsx' });
+
+    const mailOptions = {
+      from: `"CodeArambh 2.0" <${emailUser}>`,
+      to,
+      subject: `[LOCKED ATTENDANCE] Team ${teamName} (${teamId}) Finalized`,
+      text: `Hello Admin,
+
+The 4-hour modification window for Team ${teamName} (Team ID: ${teamId}) attendance has expired. The attendance is now locked.
+
+Please find attached the final attendance report for the team in the requested Excel format.
+
+Regards,
+CodeArambh 2.0 Attendance Bot`,
+      attachments: [
+        {
+          filename: `team_${teamId.replace(/[/\\?%*:|"<>\s]/g, '_')}_attendance.xlsx`,
+          content: buffer
+        }
+      ]
+    };
+
+    const result = await transporter.sendMail(mailOptions);
+    console.log(`✅ Locked attendance email sent to ${to} for team ${teamId}`);
+    return result;
+  } catch (err) {
+    console.error('❌ Error sending locked attendance email:', err.message);
+    return null;
+  }
+};
+
+module.exports = { sendConfirmationEmail, sendLockedAttendanceEmail };

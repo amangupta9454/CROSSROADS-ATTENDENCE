@@ -1,19 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Creepster&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 /* ── Custom Theme Tokens ─────────────────────────────────────────── */
 :root {
-    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-    --color-bg: #0a0f1e;
-    --color-surface: #111827;
-    --color-surface2: #1f2937;
-    --color-border: rgba(255, 255, 255, 0.08);
-    --color-accent: #6366f1;
-    --color-accent2: #8b5cf6;
-    --color-success: #10b981;
-    --color-danger: #ef4444;
-    --color-warn: #f59e0b;
-    --color-text: #f1f5f9;
-    --color-muted: #94a3b8;
+    --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+    --font-spooky: 'Creepster', cursive, sans-serif;
+    --color-bg: #090511;
+    --color-surface: #130c22;
+    --color-surface2: #1c1133;
+    --color-border: rgba(249, 115, 22, 0.15);
+    --color-accent: #f97316;
+    --color-accent2: #a855f7;
+    --color-success: #22c55e;
+    --color-danger: #ea580c;
+    --color-warn: #eab308;
+    --color-text: #f3f4f6;
+    --color-muted: #9ca3af;
 }
 
 /* ── Base Reset ──────────────────────────────────────────────────── */
@@ -54,31 +56,31 @@ body {
 
 /* ── Gradient Backgrounds ────────────────────────────────────────── */
 .bg-gradient-main {
-    background: linear-gradient(135deg, #0a0f1e 0%, #111827 40%, #1e1b4b 100%);
+    background: linear-gradient(135deg, #090511 0%, #130c22 45%, #25093a 100%);
 }
 
 .bg-gradient-card {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.12) 0%, rgba(168, 85, 247, 0.08) 100%);
 }
 
 .bg-gradient-accent {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, #f97316 0%, #a855f7 100%);
 }
 
 .bg-gradient-success {
-    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    background: linear-gradient(135deg, #15803d 0%, #22c55e 100%);
 }
 
 .bg-gradient-danger {
-    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+    background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
 }
 
 .bg-gradient-warn {
-    background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+    background: linear-gradient(135deg, #a16207 0%, #eab308 100%);
 }
 
 .bg-gradient-info {
-    background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
 }
 
 /* ── Glassmorphism ───────────────────────────────────────────────── */
@@ -200,18 +202,19 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, #f97316, #a855f7);
     color: #fff;
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2);
 }
 
 .btn-primary:hover:not(:disabled) {
     filter: brightness(1.15);
     transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
 }
 
 .btn-success {
-    background: linear-gradient(135deg, #059669, #10b981);
+    background: linear-gradient(135deg, #16a34a, #22c55e);
     color: #fff;
 }
 
@@ -221,7 +224,7 @@ body {
 }
 
 .btn-danger {
-    background: linear-gradient(135deg, #dc2626, #ef4444);
+    background: linear-gradient(135deg, #b91c1c, #dc2626);
     color: #fff;
 }
 
@@ -237,18 +240,18 @@ body {
 }
 
 .btn-outline:hover:not(:disabled) {
-    background: rgba(99, 102, 241, 0.1);
+    background: rgba(249, 115, 22, 0.1);
     transform: translateY(-1px);
 }
 
 .btn-ghost {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.04);
     color: var(--color-text);
     border: 1px solid var(--color-border);
 }
 
 .btn-ghost:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 /* ── Form Inputs ─────────────────────────────────────────────────── */
@@ -271,7 +274,7 @@ body {
 
 .input:focus {
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
 }
 
 .input-label {
@@ -389,7 +392,22 @@ tbody td {
     min-height: 100vh;
 }
 
+.mobile-header {
+    display: none;
+}
+
+.content-wrapper {
+    padding: 2rem;
+    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 @media (max-width: 768px) {
+    .mobile-header {
+        display: flex !important;
+    }
+
     .sidebar {
         transform: translateX(-100%);
         transition: transform 0.3s;
@@ -401,6 +419,10 @@ tbody td {
 
     .main-content {
         margin-left: 0;
+    }
+
+    .content-wrapper {
+        padding: 1rem;
     }
 }
 
@@ -442,8 +464,157 @@ tbody td {
 .spinner {
     width: 2rem;
     height: 2rem;
-    border: 3px solid rgba(99, 102, 241, 0.2);
+    border: 3px solid rgba(249, 115, 22, 0.15);
     border-top-color: var(--color-accent);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
+}
+
+/* ── Spooky Halloween Theme Extensions ────────────────────────────── */
+.spooky-title {
+    font-family: var(--font-spooky);
+    letter-spacing: 0.12em;
+    color: var(--color-accent);
+    text-shadow: 0 0 10px rgba(249, 115, 22, 0.6), 0 0 20px rgba(249, 115, 22, 0.3);
+}
+
+.spooky-title-purple {
+    font-family: var(--font-spooky);
+    letter-spacing: 0.12em;
+    color: var(--color-accent2);
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.6), 0 0 20px rgba(168, 85, 247, 0.3);
+}
+
+.spooky-card {
+    background: rgba(19, 12, 34, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(249, 115, 22, 0.2);
+    border-radius: 1.25rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.spooky-card:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.25), 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* 🎃 Pumpkin Lantern Template */
+.template-pumpkin-container {
+    background: radial-gradient(circle at center, #1b0a02 0%, #090511 100%);
+}
+
+.template-pumpkin-card {
+    background: rgba(27, 10, 2, 0.85);
+    border: 2px solid #ea580c;
+    box-shadow: 0 0 15px rgba(234, 88, 12, 0.3);
+    transition: all 0.3s ease;
+}
+
+.template-pumpkin-card:hover {
+    box-shadow: 0 0 25px rgba(234, 88, 12, 0.6), 0 10px 25px rgba(0,0,0,0.5);
+    transform: translateY(-2px);
+}
+
+.flicker-text {
+    animation: flickerCandle 3s infinite alternate;
+}
+
+/* 🧛 Dracula's Castle Template */
+.template-dracula-container {
+    background: radial-gradient(circle at center, #140404 0%, #090511 100%);
+}
+
+.template-dracula-card {
+    background: rgba(20, 4, 4, 0.85);
+    border: 2px solid #b91c1c;
+    box-shadow: 0 0 15px rgba(185, 28, 28, 0.3);
+    transition: all 0.3s ease;
+}
+
+.template-dracula-card:hover {
+    box-shadow: 0 0 25px rgba(185, 28, 28, 0.6), 0 10px 25px rgba(0,0,0,0.5);
+    transform: translateY(-2px);
+}
+
+/* 🧪 Witch's Cauldron Template */
+.template-witch-container {
+    background: radial-gradient(circle at center, #021a0d 0%, #090511 100%);
+}
+
+.template-witch-card {
+    background: rgba(2, 26, 13, 0.85);
+    border: 2px solid #22c55e;
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+    transition: all 0.3s ease;
+}
+
+.template-witch-card:hover {
+    box-shadow: 0 0 25px rgba(34, 197, 94, 0.6), 0 10px 25px rgba(0,0,0,0.5);
+    transform: translateY(-2px);
+}
+
+/* ── Spooky Animations ───────────────────────────────────────────── */
+@keyframes flickerCandle {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        text-shadow: 0 0 8px rgba(249, 115, 22, 0.8), 0 0 15px rgba(249, 115, 22, 0.5);
+        opacity: 1;
+    }
+    20%, 24%, 55% {
+        text-shadow: 0 0 4px rgba(249, 115, 22, 0.4);
+        opacity: 0.85;
+    }
+}
+
+@keyframes floatGhost {
+    0% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-10px) rotate(2deg);
+    }
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+}
+
+.animate-float-ghost {
+    animation: floatGhost 4s ease-in-out infinite;
+}
+
+/* Bubbling slimes rising */
+.bubble-slime {
+    position: absolute;
+    bottom: -20px;
+    background: rgba(34, 197, 94, 0.2);
+    border-radius: 50%;
+    animation: riseSlime 6s infinite ease-in;
+    pointer-events: none;
+}
+
+@keyframes riseSlime {
+    0% {
+        bottom: -20px;
+        transform: translateX(0) scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.6;
+    }
+    100% {
+        bottom: 110%;
+        transform: translateX(30px) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* Spooky Background Images from Public Folder */
+.bg-login-spooky {
+    background: linear-gradient(rgba(9, 5, 17, 0.85), rgba(9, 5, 17, 0.85)), url('/about.jpg') no-repeat center center / cover;
+}
+
+.bg-dashboard-spooky {
+    background: linear-gradient(rgba(9, 5, 17, 0.92), rgba(9, 5, 17, 0.92)), url('/contact2.webp') no-repeat center center / cover;
+    background-attachment: fixed;
+    min-height: 100vh;
 }

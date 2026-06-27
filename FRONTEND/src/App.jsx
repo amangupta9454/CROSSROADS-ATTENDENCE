@@ -1,33 +1,22 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 
-// User-facing QR scan flow
-import QRLanding from './Components/QRLanding'
-import StudentCheckIn from './Components/StudentCheckIn'
-import AudienceRegistration from './Components/AudienceRegistration'
-
 // Admin auth
 import AdminLogin from './Components/AdminLogin'
 import ProtectedRoute from './Components/ProtectedRoute'
 
-// Admin dashboard
+// Dashboard Layouts
 import AdminLayout from './Components/AdminLayout'
 import Volenter from './Components/Volenter'
 import Dashboard from './Components/Dashboard'
 import RegisteredStudents from './Components/RegisteredStudents'
 import PresentStudents from './Components/PresentStudents'
-import AudienceList from './Components/AudienceList'
-import AddStudent from './Components/AddStudent'
+import TeamAttendance from './Components/TeamAttendance'
 
 export default function App() {
   return (
     <Routes>
-      {/* Default redirect */}
-      <Route path="/" element={<Navigate to="/scan" replace />} />
-
-      {/* QR Scan Flow (public) */}
-      <Route path="/scan" element={<QRLanding />} />
-      <Route path="/scan/student" element={<StudentCheckIn />} />
-      <Route path="/scan/audience" element={<AudienceRegistration />} />
+      {/* Root path directly renders Admin/Volunteer Login */}
+      <Route path="/" element={<AdminLogin />} />
 
       {/* Admin Auth */}
       <Route path="/admin/login" element={<AdminLogin />} />
@@ -43,10 +32,9 @@ export default function App() {
       >
         <Route index element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="team-attendance" element={<TeamAttendance />} />
         <Route path="students" element={<RegisteredStudents />} />
         <Route path="present" element={<PresentStudents />} />
-        <Route path="audience" element={<AudienceList />} />
-        <Route path="add-student" element={<AddStudent />} />
       </Route>
 
       {/* Volunteer Dashboard (protected) */}
@@ -60,14 +48,13 @@ export default function App() {
       >
         <Route index element={<Navigate to="/volunteer/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="team-attendance" element={<TeamAttendance />} />
         <Route path="students" element={<RegisteredStudents />} />
         <Route path="present" element={<PresentStudents />} />
-        <Route path="audience" element={<AudienceList />} />
-        <Route path="add-student" element={<AddStudent />} />
       </Route>
 
       {/* 404 Fallback */}
-      <Route path="*" element={<Navigate to="/scan" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }

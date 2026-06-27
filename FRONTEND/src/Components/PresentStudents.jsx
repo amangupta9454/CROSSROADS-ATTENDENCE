@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
@@ -15,7 +14,6 @@ export default function PresentStudents() {
     const [exporting, setExporting] = useState(false)
     const token = localStorage.getItem('techfest_token')
     const admin = JSON.parse(localStorage.getItem('techfest_admin') || '{}')
-    const navigate = useNavigate()
     const LIMIT = 15
 
     const fetchStudents = useCallback(async () => {

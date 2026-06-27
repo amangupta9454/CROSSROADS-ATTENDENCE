@@ -8,52 +8,69 @@ const registeredStudentSchema = new mongoose.Schema(
             unique: true,
             trim: true,
         },
+        teamId: {
+            type: String,
+            required: [true, 'Team ID is required'],
+            trim: true,
+        },
         teamName: {
             type: String,
             required: [true, 'Team name is required'],
             trim: true,
         },
+        theme: {
+            type: String,
+            trim: true,
+        },
+        name: {
+            type: String,
+            trim: true,
+        },
+        email: {
+            type: String,
+            trim: true,
+            lowercase: true,
+        },
+        role: {
+            type: String,
+            enum: ['Leader', 'Member'],
+            default: 'Member',
+        },
+        // Old fields made optional
         teamLeaderName: {
             type: String,
-            required: [true, 'Team leader name is required'],
             trim: true,
         },
         leaderEmail: {
             type: String,
-            required: [true, 'Leader email is required'],
             trim: true,
             lowercase: true,
         },
         leaderMobile: {
             type: String,
-            required: [true, 'Leader mobile is required'],
             trim: true,
         },
         college: {
             type: String,
-            required: [true, 'College is required'],
             trim: true,
         },
         branch: {
             type: String,
-            required: [true, 'Branch is required'],
             trim: true,
         },
         year: {
             type: String,
-            required: [true, 'Year is required'],
             trim: true,
         },
         eventName: {
             type: String,
-            required: [true, 'Event name is required'],
             trim: true,
         },
         teamSize: {
             type: Number,
             required: [true, 'Team size is required'],
             min: 1,
-            max: 8,
+            max: 20,
         },
         teamMembers: {
             type: [String],
@@ -66,6 +83,18 @@ const registeredStudentSchema = new mongoose.Schema(
         presentAt: {
             type: Date,
             default: null,
+        },
+        attendanceMarkedAt: {
+            type: Date,
+            default: null,
+        },
+        isLocked: {
+            type: Boolean,
+            default: false,
+        },
+        emailedAdmin: {
+            type: Boolean,
+            default: false,
         },
     },
     { timestamps: true }

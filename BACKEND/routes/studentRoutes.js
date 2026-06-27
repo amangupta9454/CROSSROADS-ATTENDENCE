@@ -11,6 +11,8 @@ const {
     bulkUpload,
     exportStudents,
     exportPresentStudents,
+    getStudentsByTeamId,
+    markTeamAttendance,
 } = require('../controllers/studentController');
 
 // Multer — in-memory storage for Excel file
@@ -55,5 +57,9 @@ router.get('/id/:studentId(*)', getStudentById);
 
 // PATCH /api/students/id/:studentId(*)/present
 router.patch('/id/:studentId(*)/present', markPresent);
+
+// ── Team Attendance Flow (Volunteer / Admin) ──────────────────────────────
+router.get('/team/:teamId(*)', protect, getStudentsByTeamId);
+router.patch('/team/:teamId(*)/attendance', protect, markTeamAttendance);
 
 module.exports = router;

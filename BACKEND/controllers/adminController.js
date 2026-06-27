@@ -62,17 +62,33 @@ const seedAdmin = async (req, res) => {
             role: 'superadmin',
         });
 
-        const newVolunteer = new Admin({
+        const newVolunteer1 = new Admin({
             email: 'guptaaman8574@gmail.com',
-            password: 'Aman@2005',
+            password: 'Codearambh@2026',
+            role: 'volunteer',
+        });
+
+        const newVolunteer2 = new Admin({
+            email: 'volunteer2@gmail.com',
+            password: 'Codearambh@2026',
+            role: 'volunteer',
+        });
+
+        const newVolunteer3 = new Admin({
+            email: 'volunteer3@gmail.com',
+            password: 'Codearambh@2026',
             role: 'volunteer',
         });
 
         await newAdmin.save();
-        await newVolunteer.save();
+        await newVolunteer1.save();
+        await newVolunteer2.save();
+        await newVolunteer3.save();
+
         return res.status(201).json({
             message: force ? 'Admin reset and re-seeded successfully' : 'Admin seeded successfully',
             email: newAdmin.email,
+            volunteers: [newVolunteer1.email, newVolunteer2.email, newVolunteer3.email],
         });
     } catch (err) {
         console.error('Seed admin error:', err);
@@ -84,19 +100,17 @@ const seedAdmin = async (req, res) => {
 const getDashboardStats = async (req, res) => {
     try {
         const RegisteredStudent = require('../models/RegisteredStudent');
-        const Audience = require('../models/Audience');
 
-        const [totalStudents, presentStudents, audienceCount] = await Promise.all([
+        const [totalStudents, presentStudents] = await Promise.all([
             RegisteredStudent.countDocuments(),
             RegisteredStudent.countDocuments({ isPresent: true }),
-            Audience.countDocuments(),
         ]);
 
         return res.status(200).json({
             totalStudents,
             presentStudents,
             absentStudents: totalStudents - presentStudents,
-            audienceCount,
+            audienceCount: 0,
         });
     } catch (err) {
         console.error('Dashboard stats error:', err);

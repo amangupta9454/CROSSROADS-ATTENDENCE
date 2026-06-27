@@ -222,56 +222,118 @@ const bulkUpload = async (req, res) => {
             return res.status(400).json({ message: 'Excel file is empty' });
         }
 
-        // Check required columns
-        const requiredColumns = [
-            'student_id', 'team_name', 'team_leader_name', 'leader_email',
-            'leader_mobile', 'college', 'branch', 'year', 'event_name', 'team_size',
-        ];
-        const firstRow = rows[0];
-        const missingCols = requiredColumns.filter((col) => !(col in firstRow));
-        if (missingCols.length > 0) {
-            return res.status(400).json({
-                message: `Missing required columns: ${missingCols.join(', ')}`,
-            });
-        }
+        const getHeaderValue = (row, keys) => {
+            for (const key of keys) {
+                if (key in row) return row[key];
+                for (const rk of Object.keys(row)) {
+                    if (rk.toLowerCase().replace(/[\s_-]/g, '') === key.toLowerCase().replace(/[\s_-]/g, '')) {
+                        return row[rk];
+                    }
+                }
+            }
+            return '';
+        };
 
         const toInsert = [];
         const errors = [];
 
+        // Detect format
+        const firstRow = rows[0];
+        const isNewFormat = getHeaderValue(firstRow, ['teamId', 'Team ID', 'team_id']) !== '';
+
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
-            const rowNum = i + 2; // 1-indexed + header row
+            const rowNum = i + 2;
 
-            const data = {
-                studentId: String(row.student_id || '').trim(),
-                teamName: String(row.team_name || '').trim(),
-                teamLeaderName: String(row.team_leader_name || '').trim(),
-                leaderEmail: String(row.leader_email || '').trim().toLowerCase(),
-                leaderMobile: String(row.leader_mobile || '').trim(),
-                college: String(row.college || '').trim(),
-                branch: String(row.branch || '').trim(),
-                year: String(row.year || '').trim(),
-                eventName: String(row.event_name || '').trim(),
-                teamSize: Number(row.team_size) || 0,
-            };
+            if (isNewFormat) {
+                const teamId = String(getHeaderValue(row, ['teamId', 'Team ID', 'team_id']) || '').trim();
+                const teamName = String(getHeaderValue(row, ['teamName', 'Team Name', 'team_name']) || '').trim();
+                const theme = String(getHeaderValue(row, ['theme', 'Theme']) || '').trim();
+                const teamSize = Number(getHeaderValue(row, ['teamSize', 'Team Size', 'team_size'])) || 0;
+                const studentId = String(getHeaderValue(row, ['studentId', 'Student ID', 'student_id']) || '').trim();
+                const name = String(getHeaderValue(row, ['name', 'Name']) || '').trim();
+                const email = String(getHeaderValue(row, ['email', 'Email']) || '').trim().toLowerCase();
+                const role = String(getHeaderValue(row, ['role', 'Role']) || 'Member').trim();
+                const checkedInVal = String(getHeaderValue(row, ['checkedIn', 'Checked In', 'checked_in']) || 'NO').trim().toUpperCase();
 
-            const validationErrors = validateStudentData(data);
-            if (validationErrors.length) {
-                errors.push({ row: rowNum, studentId: data.studentId, errors: validationErrors });
-                continue;
+                const isPresent = checkedInVal === 'YES' || checkedInVal === 'TRUE';
+                const checkInTimeVal = getHeaderValue(row, ['checkInTime', 'Check In Time', 'check_in_time']);
+                let presentAt = null;
+                if (isPresent) {
+                    if (checkInTimeVal) {
+                        presentAt = new Date(checkInTimeVal);
+                        if (isNaN(presentAt.getTime())) {
+                            presentAt = new Date();
+                        }
+                    } else {
+                        presentAt = new Date();
+                    }
+                }
+
+                if (!studentId || !teamId || !teamName || !name) {
+                    errors.push({ row: rowNum, studentId, errors: ['Missing required fields (Student ID, Team ID, Team Name, Name)'] });
+                    continue;
+                }
+
+                const roleNormalized = role.toLowerCase() === 'leader' ? 'Leader' : 'Member';
+
+                toInsert.push({
+                    studentId,
+                    teamId,
+                    teamName,
+                    theme,
+                    teamSize,
+                    name,
+                    email,
+                    role: roleNormalized,
+                    teamLeaderName: roleNormalized === 'Leader' ? name : '',
+                    leaderEmail: roleNormalized === 'Leader' ? email : '',
+                    isPresent,
+                    presentAt
+                });
+            } else {
+                // Old Format fallback
+                const studentId = String(row.student_id || '').trim();
+                const teamName = String(row.team_name || '').trim();
+                const teamLeaderName = String(row.team_leader_name || '').trim();
+                const leaderEmail = String(row.leader_email || '').trim().toLowerCase();
+                const leaderMobile = String(row.leader_mobile || '').trim();
+                const college = String(row.college || '').trim();
+                const branch = String(row.branch || '').trim();
+                const year = String(row.year || '').trim();
+                const eventName = String(row.event_name || '').trim();
+                const teamSize = Number(row.team_size) || 0;
+
+                const data = {
+                    studentId, teamName, teamLeaderName, leaderEmail,
+                    leaderMobile, college, branch, year, eventName, teamSize
+                };
+
+                const validationErrors = validateStudentData(data);
+                if (validationErrors.length) {
+                    errors.push({ row: rowNum, studentId, errors: validationErrors });
+                    continue;
+                }
+
+                const members = [];
+                for (let m = 1; m <= 8; m++) {
+                    const val = String(row[`team_member_name_${m}`] || '').trim();
+                    if (val) members.push(val);
+                }
+
+                toInsert.push({
+                    ...data,
+                    teamId: studentId.split('/')[0] || studentId,
+                    name: teamLeaderName,
+                    email: leaderEmail,
+                    role: 'Leader',
+                    teamMembers: members,
+                    isPresent: false,
+                    presentAt: null
+                });
             }
-
-            // Collect team members
-            const members = [];
-            for (let m = 1; m <= 8; m++) {
-                const val = String(row[`team_member_name_${m}`] || '').trim();
-                if (val) members.push(val);
-            }
-
-            toInsert.push({ ...data, teamMembers: members });
         }
 
-        // Bulk insert with duplicate skip
         let inserted = 0;
         let duplicates = 0;
 
@@ -307,6 +369,135 @@ const bulkUpload = async (req, res) => {
     } catch (err) {
         console.error('Bulk upload error:', err);
         return res.status(500).json({ message: 'Server error during bulk upload' });
+    }
+};
+
+// ── Team Lookup: Get Students by Team ID ───────────────────────────────────────
+const getStudentsByTeamId = async (req, res) => {
+    try {
+        const { teamId } = req.params;
+        const students = await RegisteredStudent.find({
+            $or: [
+                { teamId: teamId.trim() },
+                { studentId: teamId.trim() }
+            ]
+        }).sort({ role: 1 });
+
+        if (students.length === 0) {
+            return res.status(404).json({ message: `No registered team found with ID "${teamId}".` });
+        }
+
+        const lead = students[0];
+        let isLocked = lead.isLocked;
+        let timeRemaining = null;
+        let expiresAt = null;
+
+        if (lead.attendanceMarkedAt) {
+            const markTime = new Date(lead.attendanceMarkedAt).getTime();
+            const lockTime = markTime + 4 * 60 * 60 * 1000;
+            const now = Date.now();
+            if (now >= lockTime) {
+                isLocked = true;
+                if (!lead.isLocked) {
+                    await RegisteredStudent.updateMany({ teamId: teamId.trim() }, { $set: { isLocked: true } });
+                }
+            } else {
+                timeRemaining = lockTime - now;
+                expiresAt = new Date(lockTime).toISOString();
+            }
+        }
+
+        return res.status(200).json({
+            teamId: lead.teamId,
+            teamName: lead.teamName,
+            theme: lead.theme || '',
+            teamSize: lead.teamSize,
+            isLocked,
+            attendanceMarkedAt: lead.attendanceMarkedAt,
+            expiresAt,
+            timeRemaining,
+            members: students.map(s => ({
+                studentId: s.studentId,
+                name: s.name || s.teamLeaderName || '',
+                email: s.email || s.leaderEmail || '',
+                role: s.role || 'Member',
+                isPresent: s.isPresent,
+                presentAt: s.presentAt
+            }))
+        });
+    } catch (err) {
+        console.error('Get team error:', err);
+        return res.status(500).json({ message: 'Server error fetching team details' });
+    }
+};
+
+// ── Mark Team Attendance ──────────────────────────────────────────────────────
+const markTeamAttendance = async (req, res) => {
+    try {
+        const { teamId } = req.params;
+        const { members } = req.body;
+
+        if (!Array.isArray(members) || members.length === 0) {
+            return res.status(400).json({ message: 'Members attendance list is required' });
+        }
+
+        const dbStudents = await RegisteredStudent.find({
+            $or: [
+                { teamId: teamId.trim() },
+                { studentId: teamId.trim() }
+            ]
+        });
+        if (dbStudents.length === 0) {
+            return res.status(404).json({ message: 'Team not found' });
+        }
+
+        const lead = dbStudents[0];
+        let isLocked = lead.isLocked;
+        if (lead.attendanceMarkedAt) {
+            const lockTime = new Date(lead.attendanceMarkedAt).getTime() + 4 * 60 * 60 * 1000;
+            if (Date.now() >= lockTime) {
+                isLocked = true;
+            }
+        }
+
+        if (isLocked) {
+            return res.status(400).json({ message: 'Attendance is locked. Modifications are allowed for 4 hours only after first marking.' });
+        }
+
+        const markingTime = lead.attendanceMarkedAt || new Date();
+
+        for (const member of members) {
+            const match = dbStudents.find(s => s.studentId === member.studentId);
+            if (match) {
+                if (member.isPresent && !match.isPresent) {
+                    match.isPresent = true;
+                    match.presentAt = new Date();
+                } else if (!member.isPresent && match.isPresent) {
+                    match.isPresent = false;
+                    match.presentAt = null;
+                }
+                match.attendanceMarkedAt = markingTime;
+                await match.save();
+            }
+        }
+
+        const updatedStudents = await RegisteredStudent.find({ teamId: teamId.trim() }).sort({ role: 1 });
+        return res.status(200).json({
+            message: 'Attendance saved successfully',
+            attendanceMarkedAt: markingTime,
+            isLocked: false,
+            members: updatedStudents.map(s => ({
+                studentId: s.studentId,
+                name: s.name || s.teamLeaderName || '',
+                email: s.email || s.leaderEmail || '',
+                role: s.role || 'Member',
+                isPresent: s.isPresent,
+                presentAt: s.presentAt
+            }))
+        });
+    } catch (err) {
+        console.error('Mark team attendance error:', err);
+        return res.status(500).json({ message: 'Server error marking team attendance' });
     }
 };
 
@@ -352,21 +543,17 @@ const exportPresentStudents = async (req, res) => {
 
 // ── Helper: Build Export Array ─────────────────────────────────────────
 function buildExportData(students) {
-    return students.map((s, i) => ({
-        '#': i + 1,
-        'Student ID': s.studentId,
+    return students.map((s) => ({
+        'Team ID': s.teamId || s.studentId.split('/')[0] || '',
         'Team Name': s.teamName,
-        'Team Leader': s.teamLeaderName,
-        'Leader Email': s.leaderEmail,
-        'Leader Mobile': s.leaderMobile,
-        College: s.college,
-        Branch: s.branch,
-        Year: s.year,
-        'Event Name': s.eventName,
+        'Theme': s.theme || '',
         'Team Size': s.teamSize,
-        'Team Members': s.teamMembers.join(', '),
-        Status: s.isPresent ? 'Present' : 'Absent',
-        'Present At': s.presentAt ? new Date(s.presentAt).toLocaleString('en-IN') : '-',
+        'Student ID': s.studentId,
+        'Name': s.name || s.teamLeaderName || '',
+        'Email': s.email || s.leaderEmail || '',
+        'Role': s.role || 'Member',
+        'Checked In': s.isPresent ? 'YES' : 'NO',
+        'Check In Time': s.presentAt ? new Date(s.presentAt).toLocaleString('en-IN') : '',
     }));
 }
 
@@ -379,4 +566,6 @@ module.exports = {
     bulkUpload,
     exportStudents,
     exportPresentStudents,
+    getStudentsByTeamId,
+    markTeamAttendance,
 };

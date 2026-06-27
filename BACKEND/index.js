@@ -7,7 +7,6 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 const adminRoutes = require('./routes/adminRoutes');
 const studentRoutes = require('./routes/studentRoutes');
-const audienceRoutes = require('./routes/audienceRoutes');
 
 // ── Cached DB connection (Vercel serverless optimized) ─────────────────
 let cachedDb = null;
@@ -54,10 +53,14 @@ app.use(limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// ── Lazy DB connection per request ─────────────────────────────────────
+const { runLockCheck } = require('./utils/lockManager');
+
+// ── Lazy DB connection per request + Lock Checker ──────────────────────
 app.use(async (req, res, next) => {
     try {
         await connectToDatabase();
+        // Trigger lock checker asynchronously on each request (serverless safe)
+        runLockCheck().catch(err => console.error('On-demand lock checker error:', err));
         next();
     } catch (err) {
         console.error('DB connection failed:', err.message);
@@ -67,10 +70,16 @@ app.use(async (req, res, next) => {
     }
 });
 
+// Run periodic check every 1 minute in development/local server
+if (process.env.NODE_ENV !== 'production') {
+    setInterval(() => {
+        runLockCheck().catch(err => console.error('Background lock checker error:', err));
+    }, 60000);
+}
+
 // ── Routes ─────────────────────────────────────────────────────────────
 app.use('/api/admin', adminRoutes);
 app.use('/api/students', studentRoutes);
-app.use('/api/audience', audienceRoutes);
 
 // ── Health check ───────────────────────────────────────────────────────
 app.get('/', (req, res) => {
@@ -87,7 +96,7 @@ app.use((req, res) => {
 });
 
 // ── Global Error Handler ───────────────────────────────────────────────
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
     console.error('Unhandled error:', err.message);
     res.status(err.status || 500).json({
         message: err.message || 'Internal server error',

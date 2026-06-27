@@ -35,7 +35,7 @@ export default function Dashboard() {
                 setLoading(false)
             }
         })()
-    }, [])
+    }, [token])
 
     const attendance = stats
         ? stats.totalStudents > 0
@@ -47,7 +47,7 @@ export default function Dashboard() {
         <div className="page-enter">
             <div style={{ marginBottom: '2rem' }}>
                 <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.35rem' }}>Dashboard 📊</h1>
-                <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Live overview of Crossroads 2026 attendance</p>
+                <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Live overview of CodeArambh 2.0 attendance</p>
             </div>
 
             {loading ? (
@@ -60,7 +60,6 @@ export default function Dashboard() {
                         <StatCard icon="🎓" label="Total Registered" value={stats?.totalStudents} sub="Students" gradient="linear-gradient(135deg,rgba(99,102,241,0.25),rgba(99,102,241,0.05))" />
                         <StatCard icon="✅" label="Present Today" value={stats?.presentStudents} sub="Checked In" gradient="linear-gradient(135deg,rgba(16,185,129,0.25),rgba(16,185,129,0.05))" />
                         <StatCard icon="❌" label="Yet to Arrive" value={stats?.absentStudents} sub="Absent" gradient="linear-gradient(135deg,rgba(239,68,68,0.22),rgba(239,68,68,0.04))" />
-                        <StatCard icon="🎟️" label="Audience Count" value={stats?.audienceCount} sub="Walk-ins" gradient="linear-gradient(135deg,rgba(245,158,11,0.22),rgba(245,158,11,0.04))" />
                     </div>
 
                     {/* Attendance progress bar */}
@@ -85,7 +84,6 @@ export default function Dashboard() {
                                 ['Registered Participants', stats?.totalStudents, '#818cf8'],
                                 ['Present', stats?.presentStudents, '#10b981'],
                                 ['Absent', stats?.absentStudents, '#ef4444'],
-                                ['Audience Members', stats?.audienceCount, '#f59e0b'],
                             ].map(([label, val, color]) => (
                                 <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.6rem 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                                     <span style={{ color: '#94a3b8', fontSize: '0.875rem' }}>{label}</span>
@@ -100,8 +98,6 @@ export default function Dashboard() {
                                 {[
                                     { label: 'View All Students', path: `/${admin.role === 'volunteer' ? 'volunteer' : 'admin'}/students`, icon: '🎓' },
                                     { label: 'Present Students', path: `/${admin.role === 'volunteer' ? 'volunteer' : 'admin'}/present`, icon: '✅' },
-                                    { label: 'Audience List', path: `/${admin.role === 'volunteer' ? 'volunteer' : 'admin'}/audience`, icon: '🎟️' },
-                                    { label: 'Add Student', path: `/${admin.role === 'volunteer' ? 'volunteer' : 'admin'}/add-student`, icon: '➕' },
                                 ].map(a => (
                                     <Link key={a.path} to={a.path} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 0.8rem', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.04)', color: '#f1f5f9', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500, transition: 'background 0.15s' }}
                                         onMouseEnter={e => e.currentTarget.style.background = 'rgba(99,102,241,0.15)'}

@@ -3,11 +3,10 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 
 const navLinks = [
-    { to: '/volunteer/dashboard', label: 'Dashboard', icon: '📊' },
-    { to: '/volunteer/students', label: 'Registered Students', icon: '🎓' },
-    { to: '/volunteer/present', label: 'Present Students', icon: '✅' },
-    { to: '/volunteer/audience', label: 'Audience', icon: '🎟️' },
-    { to: '/volunteer/add-student', label: 'Add Student', icon: '➕' },
+    { to: '/volunteer/dashboard', label: 'Dashboard', icon: '🎃' },
+    { to: '/volunteer/team-attendance', label: 'Team Attendance', icon: '🧟' },
+    { to: '/volunteer/students', label: 'Registered Students', icon: '💀' },
+    { to: '/volunteer/present', label: 'Present Students', icon: '🧛' },
 ]
 
 export default function Volenter() {
@@ -38,66 +37,62 @@ export default function Volenter() {
         marginBottom: '0.25rem',
     })
 
-    const Sidebar = () => (
-        <aside className="sidebar">
-            {/* Logo */}
-            <div style={{ padding: '1.5rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{ width: '40px', height: '40px', borderRadius: '0.75rem', background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', flexShrink: 0 }}>
-                        🎓
-                    </div>
-                    <div>
-                        <div style={{ fontWeight: 800, fontSize: '0.95rem', lineHeight: 1.2 }}>CROSSROADS 2026</div>
-                        <div style={{ fontSize: '0.7rem', color: '#6366f1', fontWeight: 600 }}>VOLUNTEER PANEL</div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Nav Links */}
-            <nav style={{ flex: 1, overflowY: 'auto', padding: '1rem 0.75rem' }}>
-                {navLinks.map(link => (
-                    <NavLink key={link.to} to={link.to} style={navLinkStyle} onClick={() => setSidebarOpen(false)}>
-                        <span style={{ fontSize: '1.1rem' }}>{link.icon}</span>
-                        <span>{link.label}</span>
-                    </NavLink>
-                ))}
-            </nav>
-
-            {/* Admin Info + Logout */}
-            <div style={{ padding: '1rem 0.75rem', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '0.75rem', padding: '0.75rem', marginBottom: '0.75rem' }}>
-                    <div style={{ fontSize: '0.7rem', color: '#6b7280', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.2rem' }}>Logged in as</div>
-                    <div style={{ fontSize: '0.8rem', color: '#a5b4fc', fontWeight: 600, wordBreak: 'break-all' }}>Volunteer ({admin.email})</div>
-                </div>
-                <button className="btn btn-ghost" style={{ width: '100%', justifyContent: 'center' }} onClick={handleLogout}>
-                    🚪 Logout
-                </button>
-            </div>
-        </aside>
-    )
-
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', background: '#0a0f1e' }}>
-            {/* Desktop Sidebar */}
-            <div style={{ display: 'block' }}>
-                <Sidebar />
-            </div>
+        <div className="bg-dashboard-spooky" style={{ display: 'flex' }}>
+            {/* Sidebar */}
+            <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+                {/* Logo */}
+                <div style={{ padding: '1.25rem 1rem', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                        <img 
+                            src="/logo.png" 
+                            alt="CodeArambh 2.0 Logo" 
+                            style={{ width: '42px', height: 'auto', flexShrink: 0, filter: 'drop-shadow(0 0 5px rgba(249, 115, 22, 0.4))' }} 
+                        />
+                        <div>
+                            <div className="spooky-title" style={{ fontSize: '0.9rem', lineHeight: 1.1, fontWeight: 900 }}>CodeArambh 2.0</div>
+                            <div style={{ fontSize: '0.65rem', color: '#f97316', fontWeight: 800, letterSpacing: '0.05em', marginTop: '1px' }}>VOLUNTEER PANEL</div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Nav Links */}
+                <nav style={{ flex: 1, overflowY: 'auto', padding: '1rem 0.75rem' }}>
+                    {navLinks.map(link => (
+                        <NavLink key={link.to} to={link.to} style={navLinkStyle} onClick={() => setSidebarOpen(false)}>
+                            <span style={{ fontSize: '1.1rem' }}>{link.icon}</span>
+                            <span>{link.label}</span>
+                        </NavLink>
+                    ))}
+                </nav>
+
+                {/* Admin Info + Logout */}
+                <div style={{ padding: '1rem 0.75rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem', padding: '0.75rem', marginBottom: '0.75rem', border: '1px solid rgba(249,115,22,0.1)' }}>
+                        <div style={{ fontSize: '0.65rem', color: '#9ca3af', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.2rem' }}>Logged in as</div>
+                        <div style={{ fontSize: '0.75rem', color: '#f97316', fontWeight: 700, wordBreak: 'break-all' }}>Volunteer ({admin.email})</div>
+                    </div>
+                    <button className="btn btn-ghost" style={{ width: '100%', justifyContent: 'center', borderColor: 'rgba(249,115,22,0.2)' }} onClick={handleLogout}>
+                        🚪 Logout
+                    </button>
+                </div>
+            </aside>
 
             {/* Mobile overlay */}
             {sidebarOpen && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 49 }} onClick={() => setSidebarOpen(false)} />
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 49, backdropFilter: 'blur(4px)' }} onClick={() => setSidebarOpen(false)} />
             )}
 
             {/* Main Content */}
-            <main className="main-content" style={{ flex: 1, padding: '0' }}>
+            <main className="main-content" style={{ flex: 1, padding: '0', display: 'flex', flexDirection: 'column' }}>
                 {/* Mobile Header */}
-                <div style={{ display: 'none', padding: '1rem 1.25rem', background: '#111827', borderBottom: '1px solid rgba(255,255,255,0.08)', alignItems: 'center', gap: '1rem', position: 'sticky', top: 0, zIndex: 40 }}
+                <div style={{ padding: '0.85rem 1.25rem', background: 'rgba(19, 12, 34, 0.95)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(249, 115, 22, 0.15)', alignItems: 'center', gap: '1rem', position: 'sticky', top: 0, zIndex: 40 }}
                     className="mobile-header">
-                    <button className="btn btn-ghost" onClick={() => setSidebarOpen(true)} style={{ padding: '0.5rem 0.75rem' }}>☰</button>
-                    <span style={{ fontWeight: 700 }}>TechFest Volunteer</span>
+                    <button className="btn btn-ghost" onClick={() => setSidebarOpen(true)} style={{ padding: '0.4rem 0.75rem', borderColor: 'rgba(249,115,22,0.2)' }}>☰</button>
+                    <span className="spooky-title" style={{ fontWeight: 800, fontSize: '1.1rem' }}>CodeArambh 2.0</span>
                 </div>
 
-                <div style={{ padding: '2rem', minHeight: '100vh' }}>
+                <div className="content-wrapper" style={{ flex: 1 }}>
                     <Outlet />
                 </div>
             </main>
